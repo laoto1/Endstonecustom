@@ -38,15 +38,9 @@ public:
     {
     }
 
-    T &value() noexcept
-    {
-        return is_pointer_ ? *variant_.pointer : variant_.value;
-    }
+    T &value() noexcept { return is_pointer_ ? *variant_.pointer : variant_.value; }
 
-    const T &value() const noexcept
-    {
-        return is_pointer_ ? *variant_.pointer : variant_.value;
-    }
+    const T &value() const noexcept { return is_pointer_ ? *variant_.pointer : variant_.value; }
 
 private:
     ValueOrRef(T value) : is_pointer_(false), variant_(std::move(value)) {}
@@ -98,7 +92,7 @@ public:
     {
         return std::visit(std::forward<F>(visitor), variant_);
     }
-[[nodiscard]] std::size_t index() const noexcept { return variant_.index(); }
+    [[nodiscard]] std::size_t index() const noexcept { return variant_.index(); }
     [[nodiscard]] bool valueless_by_exception() const noexcept { return variant_.valueless_by_exception(); }
 
 private:
@@ -132,15 +126,9 @@ public:
 
     EventRef(const EventRef &other) = default;
 
-    EventVariant &get()
-    {
-        return variant_;
-    }
+    EventVariant &get() { return variant_; }
 
-    EventVariant const &get() const
-    {
-        return variant_;
-    }
+    EventVariant const &get() const { return variant_; }
 
 private:
     EventVariant variant_;
