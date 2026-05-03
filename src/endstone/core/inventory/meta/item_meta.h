@@ -22,7 +22,6 @@
 #include "bedrock/world/item/item.h"
 #include "endstone/core/enchantments/enchantment.h"
 #include "endstone/core/nbt.h"
-#include "endstone/core/type.h"
 #include "endstone/inventory/item_type.h"
 #include "endstone/inventory/meta/item_meta.h"
 
@@ -82,12 +81,7 @@ public:
         }
     }
 
-    [[nodiscard]] const std::type_info &getClassTypeId() const override { return typeid(Interface); }
-
-    [[nodiscard]] bool isInstanceOf(const std::type_info &target) const override
-    {
-        return core::isInstanceOf(*this, target);
-    }
+    [[nodiscard]] ItemMeta::Type getType() const override { return Interface::MetaType; }
 
     [[nodiscard]] bool hasDisplayName() const override { return !display_name_.empty(); }
 

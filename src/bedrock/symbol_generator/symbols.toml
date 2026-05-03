@@ -20,7 +20,7 @@ version = "1.26.12"
 "?spawnResources@BlockType@@QEBAXAEAVBlockSource@@AEBVBlockPos@@AEBVBlock@@AEAVIRandom@@AEBUResourceDropsContext@@@Z" = 66292624
 "?tryGetStateFromLegacyData@BlockType@@QEBAPEBVBlock@@G@Z" = 66285792
 # BlockTypeRegistry
-"?forEachBlockType@BlockTypeRegistry@@QEBAXV?$function_ref@$$A6A_NAEBVBlockType@@@Z$$A6A_N0@Z@brstd@@@Z" = 68343248
+"?forEachBlockType@BlockTypeRegistry@@QEAAXV?$function_ref@$$A6A_NAEBVBlockType@@@Z$$A6A_N0@Z@brstd@@@Z" = 68343248
 # CampfireBlockActor
 "?_finishCooking@CampfireBlockActor@@AEAAXAEAVBlockSource@@H@Z" = 68195632
 # Certificate
@@ -137,7 +137,7 @@ version = "1.26.12"
 "_ZNK9BlockType14spawnResourcesER11BlockSourceRK8BlockPosRK5BlockR7IRandomRK20ResourceDropsContext" = 175962368
 "_ZNK9BlockType25tryGetStateFromLegacyDataEt" = 175954064
 # BlockTypeRegistry
-"_ZNK17BlockTypeRegistry16forEachBlockTypeEN5brstd12function_refIFbRK9BlockTypeES5_EE" = 180600784
+"_ZN17BlockTypeRegistry16forEachBlockTypeEN5brstd12function_refIFbRK9BlockTypeES5_EE" = 180600784
 # CampfireBlockActor
 "_ZN18CampfireBlockActor14_finishCookingER11BlockSourcei" = 183920864
 # Certificate

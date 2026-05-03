@@ -1,19 +1,6 @@
-from collections.abc import Callable
-from typing import TypeVar, overload
-
 import lazy_loader as lazy
 
 from endstone._python.event import EventPriority
-
-_F = TypeVar("_F", bound=Callable[..., None])
-
-
-@overload
-def event_handler(__func: _F) -> _F: ...
-
-
-@overload
-def event_handler(*, priority: EventPriority = ..., ignore_cancelled: bool = ...) -> Callable[[_F], _F]: ...
 
 
 def event_handler(func=None, *, priority: EventPriority = EventPriority.NORMAL, ignore_cancelled: bool = False):
@@ -27,33 +14,6 @@ def event_handler(func=None, *, priority: EventPriority = EventPriority.NORMAL, 
         return decorator(func)
 
     return decorator
-
-
-class Cancellable:
-    """
-    Represents an event that may be cancelled by a plugin or the server.
-    """
-
-    @property
-    def is_cancelled(self) -> bool:
-        """
-        Gets or sets the cancellation state of this event.
-
-        A cancelled event will not be executed in the server, but will still pass to other plugins.
-        """
-        return getattr(self, "_cancelled", False)
-
-    @is_cancelled.setter
-    def is_cancelled(self, arg1: bool) -> None:  # noqa
-        setattr(self, "_cancelled", arg1)
-
-    def cancel(self) -> None:
-        """
-        Cancel this event.
-
-        A cancelled event will not be executed in the server, but will still pass to other plugins.
-        """
-        self.is_cancelled = True
 
 
 __getattr__, __dir__, __all__ = lazy.attach(
@@ -80,6 +40,7 @@ __getattr__, __dir__, __all__ = lazy.attach(
             "BlockPistonRetractEvent",
             "BlockPlaceEvent",
             "BroadcastMessageEvent",
+            "Cancellable",
             "ChunkEvent",
             "ChunkLoadEvent",
             "ChunkUnloadEvent",
@@ -131,4 +92,4 @@ __getattr__, __dir__, __all__ = lazy.attach(
     },
 )
 
-__all__.extend(["Cancellable", "EventPriority", "event_handler"])
+__all__.extend(["EventPriority", "event_handler"])

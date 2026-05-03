@@ -29,11 +29,9 @@ add_library(endstone_core
         player.cpp
         registry.cpp
         server.cpp
-        type.cpp
         signal_handler.cpp
         skin.cpp
         actor/actor.cpp
-        actor/actor_type.cpp
         actor/item.cpp
         ban/ip_ban_list.cpp
         ban/player_ban_list.cpp
@@ -41,7 +39,6 @@ add_library(endstone_core
         block/block_data.cpp
         block/block_face.cpp
         block/block_state.cpp
-        block/block_snapshot.cpp
         block/block_type.cpp
         boss/boss_bar.cpp
         console/console.cpp
@@ -61,7 +58,6 @@ add_library(endstone_core
         command/defaults/pardon_ip_command.cpp
         command/defaults/plugins_command.cpp
         command/defaults/reload_command.cpp
-        command/defaults/restart_command.cpp
         command/defaults/seed_command.cpp
         command/defaults/status_command.cpp
         command/defaults/version_command.cpp
@@ -69,10 +65,8 @@ add_library(endstone_core
         enchantments/enchantment.cpp
         form/form_codec.cpp
         inventory/meta/item_meta.cpp
-        inventory/meta/book_meta.cpp
-        inventory/meta/crossbow_meta.cpp
         inventory/meta/map_meta.cpp
-        inventory/meta/writable_book_meta.cpp
+        inventory/inventory.cpp
         inventory/item_factory.cpp
         inventory/item_metas.cpp
         inventory/item_stack.cpp

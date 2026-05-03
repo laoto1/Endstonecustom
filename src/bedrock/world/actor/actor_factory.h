@@ -19,16 +19,8 @@
 #include "bedrock/gamerefs/owner_ptr.h"
 #include "bedrock/world/actor/actor.h"
 #include "bedrock/world/actor/actor_definition_identifier.h"
-#include "bedrock/world/actor/actor_registry.h"
 
 class Level;
-using ActorDataMap = std::unordered_map<std::string, ActorFactoryData>;
-
-class IEntityInitializer {
-public:
-    virtual ~IEntityInitializer();
-    virtual void entityInitializer(std::unique_ptr<Actor>, EntityContext &, const EntityContext &) = 0;
-};
 
 class ActorFactory {
 public:
@@ -36,13 +28,4 @@ public:
     virtual ~ActorFactory();
     OwnerPtr<EntityContext> createSpawnedActor(const ActorDefinitionIdentifier &identifier, Actor *spawner,
                                                const Vec3 &position, const Vec2 &rotation);
-
-    [[nodiscard]] std::vector<std::string> generateActorIdentifierList() const;
-
-private:
-    Bedrock::NotNullNonOwnerPtr<Level> level_;
-    std::shared_ptr<IEntityInitializer> entity_initializer_;
-    Bedrock::NonOwnerPointer<ActorDefinitionGroup> definitions_;
-    ActorDataMap factory_function_;
-    // ...
 };

@@ -11,7 +11,6 @@ import sys
 import traceback
 import warnings
 from pathlib import Path
-from typing import Any
 
 import pkginfo
 from importlib_metadata import EntryPoint, distribution, entry_points, metadata
@@ -41,13 +40,13 @@ def find_python() -> Path:
         paths.append(os.path.join(sys.base_prefix, "bin", "python"))
 
     # Dedup while preserving order
-    seen: set[Path] = set()
-    ordered: list[Path] = []
-    for p in paths:
-        resolved = Path(p).resolve()
-        if resolved not in seen:
-            seen.add(resolved)
-            ordered.append(resolved)
+    seen = set()
+    ordered = []
+    for path in paths:
+        path = Path(path).resolve()
+        if path not in seen:
+            seen.add(path)
+            ordered.append(path)
 
     for path in ordered:
         if path.is_file():
@@ -56,7 +55,7 @@ def find_python() -> Path:
     raise RuntimeError(f"Unable to find Python executable. Attempted paths: {ordered}")
 
 
-def _build_commands(commands: dict[str, Any]) -> list[Command]:
+def _build_commands(commands: dict) -> list[Command]:
     results = []
     for name, command in commands.items():
         command = Command(name, **command)
@@ -64,7 +63,7 @@ def _build_commands(commands: dict[str, Any]) -> list[Command]:
     return results
 
 
-def _build_permissions(permissions: dict[str, Any]) -> list[Permission]:
+def _build_permissions(permissions: dict) -> list[Permission]:
     results = []
     for name, permission in permissions.items():
         if "default" in permission:
@@ -82,18 +81,18 @@ def _build_permissions(permissions: dict[str, Any]) -> list[Permission]:
 
 
 sys.executable = str(find_python())
-sys._base_executable = sys.executable  # type: ignore[attr-defined]
+sys._base_executable = sys.executable
 
 
 class PythonPluginLoader(PluginLoader):
-    SUPPORTED_API = ["0.5", "0.6", "0.7", "0.8", "0.9", "0.10", "0.11", "0.12"]
+    SUPPORTED_API = ["0.5", "0.6", "0.7", "0.8", "0.9", "0.10", "0.11"]
 
     def __init__(self, server: Server):
         PluginLoader.__init__(self, server)
         self._invalidate_caches()
-        self._plugins: list[Plugin] = []
+        self._plugins = []
 
-    def _invalidate_caches(self) -> None:
+    def _invalidate_caches(self):
         importlib.invalidate_caches()
         for module in list(sys.modules.keys()):
             if module.startswith("endstone_"):
@@ -113,13 +112,11 @@ class PythonPluginLoader(PluginLoader):
                     if directory.startswith("endstone_") or directory.startswith("~"):
                         shutil.rmtree(os.path.join(site_dir, directory))
 
-    def load_plugin(self, file: str) -> Plugin | None:  # type: ignore[override]
+    def load_plugin(self, file: str) -> Plugin | None:
         env = os.environ.copy()
         env.pop("LD_PRELOAD", "")
 
-        dist_name: str | None = pkginfo.Wheel(file).name
-        if dist_name is None:
-            raise ValueError(f"Could not determine package name from {file}")
+        dist_name = pkginfo.Wheel(file).name
         subprocess.run(
             [
                 sys.executable,
@@ -163,8 +160,6 @@ class PythonPluginLoader(PluginLoader):
 
     def _load_plugin_from_ep(self, ep: EntryPoint) -> Plugin | None:
         # enforce naming convention
-        if ep.dist is None:
-            return None
         if not ep.dist.name.replace("_", "-").startswith("endstone-"):
             self.server.logger.error(
                 f"Error occurred when trying to load plugin from entry point '{ep.name}': Invalid name."
@@ -225,8 +220,7 @@ class PythonPluginLoader(PluginLoader):
                 raise TypeError(f"Invalid value for load order: {load}")
 
         description = cls_attr.pop("description", plugin_metadata.get("summary", None))
-        author_email = plugin_metadata.get("author_email", "")
-        authors = cls_attr.pop("authors", author_email.split(",") if isinstance(author_email, str) else author_email)
+        authors = cls_attr.pop("authors", plugin_metadata.get("author_email", "").split(","))
         website = cls_attr.pop("website", "; ".join(plugin_metadata.get("project_url", [])))
 
         commands = cls_attr.pop("commands", {})

@@ -16,17 +16,16 @@
 
 #include "bedrock/world/level/dimension/dimension.h"
 #include "endstone/actor/actor.h"
-#include "endstone/actor/item.h"
 #include "endstone/core/server.h"
 #include "endstone/level/dimension.h"
 
 namespace endstone::core {
 class EndstoneDimension : public Dimension {
 public:
-    explicit EndstoneDimension(WeakRef<::Dimension> dimension, EndstoneLevel &level);
+    explicit EndstoneDimension( WeakRef<::Dimension> dimension, EndstoneLevel &level);
     ~EndstoneDimension() override = default;
-    [[nodiscard]] DimensionId getId() const override;
-    [[nodiscard]] std::string getTranslationKey() const override;
+    [[nodiscard]] std::string getName() const override;
+    [[nodiscard]] Type getType() const override;
     [[nodiscard]] Level &getLevel() const override;
     [[nodiscard]] std::unique_ptr<Block> getBlockAt(int x, int y, int z) const override;
     [[nodiscard]] std::unique_ptr<Block> getBlockAt(Location location) const override;
@@ -35,7 +34,7 @@ public:
     [[nodiscard]] std::unique_ptr<Block> getHighestBlockAt(Location location) const override;
     [[nodiscard]] std::vector<std::unique_ptr<Chunk>> getLoadedChunks() override;
     [[nodiscard]] Item &dropItem(Location location, const ItemStack &item) override;
-    [[nodiscard]] Actor *spawnActor(Location location, ActorTypeId type) override;
+    [[nodiscard]] Actor *spawnActor(Location location, std::string type) override;
     [[nodiscard]] std::vector<Actor *> getActors() const override;
 
     [[nodiscard]] ::Dimension &getHandle() const;

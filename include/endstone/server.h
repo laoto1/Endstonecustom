@@ -20,7 +20,6 @@
 #include <stdexcept>
 #include <string>
 #include <string_view>
-#include <typeinfo>
 #include <utility>
 #include <vector>
 
@@ -28,13 +27,14 @@
 #include "endstone/ban/player_ban_list.h"
 #include "endstone/block/block_data.h"
 #include "endstone/boss/boss_bar.h"
-#include "endstone/command/command_sender.h"
 #include "endstone/lang/language.h"
+#include "endstone/level/level.h"
 #include "endstone/logger.h"
 #include "endstone/map/map_view.h"
-#include "endstone/message.h"
+#include "endstone/player.h"
 #include "endstone/plugin/service_manager.h"
 #include "endstone/scoreboard/scoreboard.h"
+#include "endstone/util/result.h"
 #include "endstone/util/uuid.h"
 
 namespace endstone {
@@ -44,9 +44,7 @@ class Enchantment;
 class ItemFactory;
 class ItemType;
 class IRegistry;
-class Level;
 class Scheduler;
-class Player;
 class PluginCommand;
 class PluginManager;
 
@@ -407,12 +405,12 @@ public:
      *
      * @return the corresponding registry or null if not present
      */
-    [[nodiscard]] virtual IRegistry *_getRegistry(const std::type_info &type) const = 0;
+    [[nodiscard]] virtual IRegistry *_getRegistry(const std::string &type) const = 0;
 
     template <typename T>
     [[nodiscard]] const Registry<T> &getRegistry() const
     {
-        return *static_cast<Registry<T> *>(_getRegistry(typeid(T)));
+        return *static_cast<Registry<T> *>(_getRegistry(T::RegistryType));
     }
 
     /**

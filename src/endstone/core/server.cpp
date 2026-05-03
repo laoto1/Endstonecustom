@@ -15,7 +15,6 @@
 #include "endstone/core/server.h"
 
 #include <filesystem>
-#include "endstone/core/type.h"
 #include <iostream>
 #include <memory>
 
@@ -52,7 +51,6 @@
 #include "endstone/core/player.h"
 #include "endstone/core/plugin/cpp_plugin_loader.h"
 #include "endstone/core/plugin/python_plugin_loader.h"
-#include "endstone/actor/actor_type.h"
 #include "endstone/core/registry.h"
 #include "endstone/core/signal_handler.h"
 #include "endstone/core/util/uuid.h"
@@ -70,7 +68,6 @@ namespace py = pybind11;
 namespace endstone::core {
 EndstoneServer::EndstoneServer() : logger_(LoggerFactory::getLogger(""))
 {
-    registerTypes();
     EndstoneServer::getLogger().info("{}This server is running {} version: {} (Minecraft: {})",
                                      ColorFormat::DarkAqua + ColorFormat::Bold, EndstoneServer::getName(),
                                      EndstoneServer::getVersion(), EndstoneServer::getMinecraftVersion());
@@ -191,10 +188,9 @@ void EndstoneServer::setLevel(::Level &level)
 
 void EndstoneServer::initRegistries()
 {
-    registries_[typeid(ActorType)] = EndstoneRegistry<ActorType, std::string>::create();
-    registries_[typeid(BlockType)] = EndstoneRegistry<BlockType, ::BlockType>::create();
-    registries_[typeid(Enchantment)] = EndstoneRegistry<Enchantment, ::Enchant>::create();
-    registries_[typeid(ItemType)] = EndstoneRegistry<ItemType, ::Item>::create();
+    registries_["BlockType"] = EndstoneRegistry<BlockType, ::BlockType>::create();
+    registries_["Enchantment"] = EndstoneRegistry<Enchantment, ::Enchant>::create();
+    registries_["ItemType"] = EndstoneRegistry<ItemType, ::Item>::create();
     BlockStateRegistry::get().unregisterBlockStates();
     ::BlockState::forEachState([](const auto &state) {
         BlockStateRegistry::get().registerBlockState(state);
@@ -509,7 +505,7 @@ void EndstoneServer::broadcast(const Message &message, const std::string &permis
 {
     std::unordered_set<const CommandSender *> recipients;
     for (const auto *permissible : getPluginManager().getPermissionSubscriptions(permission)) {
-        if (const auto *sender = permissible->as<CommandSender>(); sender && sender->hasPermission(permission)) {
+        if (const auto *sender = permissible->asCommandSender(); sender && sender->hasPermission(permission)) {
             recipients.insert(sender);
         }
     }
@@ -639,9 +635,9 @@ ServiceManager &EndstoneServer::getServiceManager() const
     return *service_manager_;
 }
 
-IRegistry *EndstoneServer::_getRegistry(const std::type_info &type) const
+IRegistry *EndstoneServer::_getRegistry(const std::string &type) const
 {
-    const auto it = registries_.find(std::type_index(type));
+    const auto it = registries_.find(type);
     if (registries_.end() == it) {
         return nullptr;
     }

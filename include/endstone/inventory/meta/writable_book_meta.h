@@ -25,6 +25,8 @@ namespace endstone {
  */
 class WritableBookMeta : public ItemMeta {
 public:
+    ENDSTONE_ITEM_META_TYPE(WritableBook)
+
     /**
      * @brief Checks for the existence of pages in the book.
      *
@@ -64,7 +66,7 @@ public:
     /**
      * @brief Clears the existing book pages, and sets the book to use the provided pages.
      *
-     * @note Maximum 50 pages with 256 characters per page.
+     * @note Maximum 50 pages with 798 characters per page.
      *
      * @param pages A list of pages to set the book to use
      */
@@ -77,7 +79,7 @@ public:
     /**
      * @note Clears the existing book pages, and sets the book to use the provided pages.
      *
-     * @brief Maximum 50 pages with 256 characters per page.
+     * @brief Maximum 50 pages with 798 characters per page.
      *
      * @param pages A list of strings, each being a page
      */
@@ -86,24 +88,24 @@ public:
     /**
      * @brief Adds new pages to the end of the book.
      *
-     * @note Up to a maximum of 50 pages with 256 characters per page.
+     * @note Up to a maximum of 50 pages with 798 characters per page.
      *
      * @param pages A list of strings, each being a page
      */
     template <std::convertible_to<std::string>... Args>
     void addPage(Args &&...pages)
     {
-        addPages(std::vector<std::string>{&pages...});
+        addPage(std::vector<std::string>{&pages...});
     }
 
     /**
      * @brief Adds new pages to the end of the book.
      *
-     * @note Up to a maximum of 50 pages with 256 characters per page.
+     * @note Up to a maximum of 50 pages with 798 characters per page.
      *
      * @param pages A list of strings, each being a page
      */
-    virtual void addPages(std::vector<std::string> pages) = 0;
+    virtual void addPage(std::vector<std::string> pages) = 0;
 
     /**
      * @brief Gets the number of pages in the book.

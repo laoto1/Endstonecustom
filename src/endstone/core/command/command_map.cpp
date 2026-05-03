@@ -32,7 +32,6 @@
 #include "endstone/core/command/defaults/pardon_ip_command.h"
 #include "endstone/core/command/defaults/plugins_command.h"
 #include "endstone/core/command/defaults/reload_command.h"
-#include "endstone/core/command/defaults/restart_command.h"
 #include "endstone/core/command/defaults/seed_command.h"
 #include "endstone/core/command/defaults/status_command.h"
 #include "endstone/core/command/defaults/version_command.h"
@@ -149,7 +148,6 @@ void EndstoneCommandMap::setDefaultCommands()
     registerCommand(std::make_unique<PardonIpCommand>());
     registerCommand(std::make_unique<PluginsCommand>());
     registerCommand(std::make_unique<ReloadCommand>());
-    registerCommand(std::make_unique<RestartCommand>());
     registerCommand(std::make_unique<SeedCommand>());
     registerCommand(std::make_unique<StatusCommand>());
     registerCommand(std::make_unique<VersionCommand>());

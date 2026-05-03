@@ -71,23 +71,13 @@ public:
         return sender_.getEffectivePermissions();
     }
 
-    [[nodiscard]] const std::type_info &getClassTypeId() const override { return typeid(CommandSender); }
-    [[nodiscard]] bool isInstanceOf(const std::type_info &target) const override
-    {
-        return typeid(CommandSender) == target || typeid(Permissible) == target || typeid(Object) == target;
-    }
+    [[nodiscard]] ConsoleCommandSender *asConsole() const override { return sender_.asConsole(); }
 
-    /**
-     * @brief Returns a reference to the wrapped CommandSender
-     *
-     * @return The underlying command sender
-     */
-    CommandSender &getWrapped() { return sender_; }
+    [[nodiscard]] BlockCommandSender *asBlock() const override { return sender_.asBlock(); }
 
-    /**
-     * @copydoc getWrapped()
-     */
-    [[nodiscard]] const CommandSender &getWrapped() const { return sender_; }
+    [[nodiscard]] Actor *asActor() const override { return sender_.asActor(); }
+
+    [[nodiscard]] Player *asPlayer() const override { return sender_.asPlayer(); }
 
     [[nodiscard]] Server &getServer() const override { return sender_.getServer(); }
 

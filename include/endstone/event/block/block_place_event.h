@@ -32,9 +32,9 @@ namespace endstone {
 class BlockPlaceEvent : public Cancellable<BlockEvent> {
 public:
     ENDSTONE_EVENT(BlockPlaceEvent);
-    explicit BlockPlaceEvent(std::unique_ptr<Block> placed_block, std::unique_ptr<BlockState> replaced_state,
+    explicit BlockPlaceEvent(std::unique_ptr<BlockState> placed_block, std::unique_ptr<Block> replaced_block,
                              std::unique_ptr<Block> placed_against, Player &player)
-        : Cancellable(std::move(placed_block)), replaced_state_(std::move(replaced_state)),
+        : Cancellable(std::move(replaced_block)), placed_block_(std::move(placed_block)),
           placed_against_(std::move(placed_against)), player_(player)
     {
     }
@@ -48,18 +48,18 @@ public:
     [[nodiscard]] Player &getPlayer() const { return player_; }
 
     /**
-     * @brief Gets the block placed.
+     * @brief Gets the BlockState for the block which was placed.
      *
-     * @return The Block that was placed.
+     * @return The BlockState for the block which was placed.
      */
-    [[nodiscard]] Block &getBlockPlaced() const { return getBlock(); }
+    [[nodiscard]] BlockState &getBlockPlacedState() const { return *placed_block_; }
 
     /**
-     * @brief Gets the BlockState for the block which was replaced.
+     * @brief Gets the block which was replaced.
      *
-     * @return The BlockState of the block that was replaced.
+     * @return The Block which was replaced.
      */
-    [[nodiscard]] BlockState &getBlockReplacedState() const { return *replaced_state_; }
+    [[nodiscard]] Block &getBlockReplaced() const { return getBlock(); }
 
     /**
      * @brief Gets the block that this block was placed against
@@ -69,9 +69,11 @@ public:
     [[nodiscard]] Block &getBlockAgainst() const { return *placed_against_; }
 
 private:
-    std::unique_ptr<BlockState> replaced_state_;
+    std::unique_ptr<BlockState> placed_block_;
     std::unique_ptr<Block> placed_against_;
     Player &player_;
+    // TODO(event): add ItemStack item
+    // TODO(event): add BlockState placedBlockState
 };
 
 }  // namespace endstone

@@ -21,7 +21,3 @@ stubs/*
 dist/*
 endstone/_version.py
 conan_provider.cmake
-
-# Python virtual environment
-.venv/**
-.venv

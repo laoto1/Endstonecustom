@@ -67,6 +67,9 @@ EndstonePlayer::EndstonePlayer(EndstoneServer &server, ::Player &player)
       inventory_(std::make_unique<EndstonePlayerInventory>(player)),
       ender_chest_(std::make_unique<EndstoneInventory>(*player.getEnderChestContainer()))
 {
+    const auto component = player.getPersistentComponent<UserEntityIdentifierComponent>();
+    uuid_ = EndstoneUUID::fromMinecraft(component->getClientUUID());
+    xuid_ = component->getXuid(false);
     last_op_status_ = EndstonePlayer::isOp();
 }
 
@@ -120,10 +123,13 @@ std::unordered_set<PermissionAttachmentInfo *> EndstonePlayer::getEffectivePermi
     return perm_->getEffectivePermissions();
 }
 
+Player *EndstonePlayer::asPlayer() const
+{
+    return const_cast<EndstonePlayer *>(this);
+}
+
 void EndstonePlayer::sendMessage(const Message &message) const
 {
-    Preconditions::checkArgument(!std::visit([](const auto &msg) { return msg.empty(); }, message),
-                                 "Message must not be empty");
     auto packet = MinecraftPackets::createPacket(MinecraftPacketIds::Text);
     auto &pk = static_cast<TextPacket &>(*packet);
     std::visit(overloaded{[&](const std::string &msg) {
@@ -140,8 +146,8 @@ void EndstonePlayer::sendMessage(const Message &message) const
                                   entry["with"] = {{"rawtext", with}};
                               }
                               nlohmann::json rawtext = {{"rawtext", nlohmann::json::array({entry})}};
-                              pk.payload = {
-                                  .body = TextPacketPayload::MessageOnly{TextPacketType::TextObject, rawtext.dump()}};
+                              pk.payload = {.body = TextPacketPayload::MessageOnly{
+                                                TextPacketType::TextObject, rawtext.dump()}};
                           }},
                message);
     getHandle().sendNetworkPacket(*packet);
@@ -193,8 +199,7 @@ bool EndstonePlayer::teleport(const Location &location)
 
 UUID EndstonePlayer::getUniqueId() const
 {
-    const auto *component = getHandle().tryGetComponent<UserEntityIdentifierComponent>();
-    return EndstoneUUID::fromMinecraft(component->getClientUUID());
+    return uuid_;
 }
 
 bool EndstonePlayer::isOp() const
@@ -215,8 +220,7 @@ void EndstonePlayer::setOp(bool value)
 
 std::string EndstonePlayer::getXuid() const
 {
-    const auto *component = getHandle().tryGetComponent<UserEntityIdentifierComponent>();
-    return component->getXuid();
+    return xuid_;
 }
 
 SocketAddress EndstonePlayer::getAddress() const
@@ -244,7 +248,7 @@ void EndstonePlayer::kick(std::string message) const
 
 bool EndstonePlayer::performCommand(std::string command) const
 {
-    return server_.dispatchCommand(*const_cast<EndstonePlayer *>(this), command);
+    return server_.dispatchCommand(*asPlayer(), command);
 }
 
 bool EndstonePlayer::isSneaking() const
@@ -482,7 +486,7 @@ void EndstonePlayer::spawnParticle(std::string name, float x, float y, float z,
                                    std::optional<std::string> molang_variables_json) const
 {
     BinaryStream stream;
-    stream.writeByte(getHandle().getDimension().getDimensionId().runtime_id, "Dimension Id", nullptr);
+    stream.writeByte(static_cast<int>(getDimension().getType()), "Dimension Id", nullptr);
     stream.writeVarInt64(-1, "Actor Unique ID", nullptr);  // -1 = self
     stream.writeFloat(x, "X", nullptr);
     stream.writeFloat(y, "Y", nullptr);

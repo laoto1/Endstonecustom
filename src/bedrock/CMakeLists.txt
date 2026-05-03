@@ -97,7 +97,6 @@ add_library(bedrock STATIC
         world/item/item_stack.cpp
         world/item/item_stack_base.cpp
         world/item/vanilla_item_tags.cpp
-        world/item/written_book_item.cpp
         world/item/crafting/recipes.cpp
         world/item/enchanting/enchant.cpp
         world/item/registry/creative_group_info.cpp

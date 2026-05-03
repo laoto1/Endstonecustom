@@ -12,15 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "event.h"
-
 #include "endstone_python.h"
 
 namespace py = pybind11;
 
 namespace endstone::python {
 
-void init_event(py::module_ &m, py::class_<Event, PyEvent> &event)
+void init_event(py::module_ &m, py::class_<Event> &event)
 {
     py::native_enum<EventResult>(m, "EventResult", "enum.Enum")
         .value("DENY", EventResult::Deny)
@@ -28,17 +26,34 @@ void init_event(py::module_ &m, py::class_<Event, PyEvent> &event)
         .value("ALLOW", EventResult::Allow)
         .finalize();
 
-    event.def(py::init<bool>(), py::arg("is_async") = false)
-        .def_property_readonly("event_name", &Event::getEventName, "Gets a user-friendly identifier for this event.")
+    event.def_property_readonly("event_name", &Event::getEventName, "Gets a user-friendly identifier for this event.")
         .def_property_readonly("is_asynchronous", &Event::isAsynchronous, "Whether the event fires asynchronously.");
 
     py::class_<ICancellable>(m, "Cancellable", "Represents an event that may be cancelled by a plugin or the server.")
+        .def_property(
+            "cancelled",
+            [](const ICancellable &self) {
+                PyErr_WarnEx(PyExc_FutureWarning,
+                             "The event.cancelled property is deprecated and will be removed from endstone in a future "
+                             "version. Use event.is_cancelled instead.",
+                             1);
+                return self.isCancelled();
+            },
+            [](ICancellable &self, const bool value) {
+                PyErr_WarnEx(PyExc_FutureWarning,
+                             "The event.cancelled property is deprecated and will be removed from endstone in a future "
+                             "version. Use event.is_cancelled instead.",
+                             1);
+                self.setCancelled(value);
+            },
+            "Gets or sets the cancellation state of this event. A cancelled event will not be executed in "
+            "the server, but will still pass to other plugins. [Warning] Deprecated: Use is_cancelled instead.")
         .def_property("is_cancelled", &ICancellable::isCancelled, &ICancellable::setCancelled,
-                      "Gets or sets the cancellation state of this event.\n\n"
-                      "A cancelled event will not be executed in the server, but will still pass to other plugins.")
+                      "Gets or sets the cancellation state of this event. A cancelled event will not be executed in "
+                      "the server, but will still pass to other plugins.")
         .def("cancel", &ICancellable::cancel,
-             "Cancel this event.\n\n"
-             "A cancelled event will not be executed in the server, but will still pass to other plugins.");
+             "Cancel this event. A cancelled event will not be executed in the server, but will still pass to other "
+             "plugins.");
 
     // Actor events
     py::class_<ActorEvent<Actor>, Event>(m, "ActorEvent", "Represents an Actor-related event.")
@@ -110,7 +125,8 @@ void init_event(py::module_ &m, py::class_<Event, PyEvent> &event)
                                                           "Called when a block is broken by a player.")
         .def_property_readonly("player", &BlockBreakEvent::getPlayer, py::return_value_policy::reference,
                                "Gets the Player that is breaking the block involved in this event.");
-    py::class_<BlockExplodeEvent, BlockEvent, ICancellable>(m, "BlockExplodeEvent", "Called when a block explodes.")
+    py::class_<BlockExplodeEvent, BlockEvent, ICancellable>(m, "BlockExplodeEvent",
+                                                             "Called when a block explodes.")
         .def_property(
             "block_list",
             [](const BlockExplodeEvent &self) {
@@ -164,11 +180,11 @@ void init_event(py::module_ &m, py::class_<Event, PyEvent> &event)
                                                           "Called when a block is placed by a player.")
         .def_property_readonly("player", &BlockPlaceEvent::getPlayer, py::return_value_policy::reference,
                                "Gets the player who placed the block involved in this event.")
-        .def_property_readonly("block_placed", &BlockPlaceEvent::getBlockPlaced, py::return_value_policy::reference,
-                               "Gets the block placed.")
-        .def_property_readonly("block_replaced_state", &BlockPlaceEvent::getBlockReplacedState,
+        .def_property_readonly("block_placed_state", &BlockPlaceEvent::getBlockPlacedState,
                                py::return_value_policy::reference,
-                               "Gets the BlockState for the block which was replaced.")
+                               "Gets the BlockState for the block which was placed.")
+        .def_property_readonly("block_replaced", &BlockPlaceEvent::getBlockReplaced, py::return_value_policy::reference,
+                               "Gets the block which was replaced.")
         .def_property_readonly("block_against", &BlockPlaceEvent::getBlockAgainst, py::return_value_policy::reference,
                                "Gets the block that this block was placed against");
     py::class_<LeavesDecayEvent, BlockEvent, ICancellable>(

@@ -48,6 +48,11 @@ EndstoneBlockCommandSender::EndstoneBlockCommandSender(const CommandOrigin &orig
 {
 }
 
+BlockCommandSender *EndstoneBlockCommandSender::asBlock() const
+{
+    return const_cast<EndstoneBlockCommandSender *>(this);
+}
+
 void EndstoneBlockCommandSender::sendMessage(const Message &message) const
 {
     const auto tr = EndstoneMessage::toTranslatable(message);

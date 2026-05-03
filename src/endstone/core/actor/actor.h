@@ -23,7 +23,6 @@
 #include "endstone/core/level/dimension.h"
 #include "endstone/core/permissions/permissible_base.h"
 #include "endstone/core/server.h"
-#include "endstone/core/type.h"
 
 class Actor;
 
@@ -92,38 +91,71 @@ public:
         return ActorPermissibleBase::get().removeAttachment(attachment);
     }
 
-    void recalculatePermissions() override { ActorPermissibleBase::get().recalculatePermissions(); }
+    void recalculatePermissions() override
+    {
+        ActorPermissibleBase::get().recalculatePermissions();
+    }
 
     [[nodiscard]] std::unordered_set<PermissionAttachmentInfo *> getEffectivePermissions() const override
     {
         return ActorPermissibleBase::get().getEffectivePermissions();
     }
 
-    // Object
-    [[nodiscard]] const std::type_info &getClassTypeId() const override { return typeid(Interface); }
-
-    [[nodiscard]] bool isInstanceOf(const std::type_info &target) const override
+    // CommandSender
+    [[nodiscard]] ConsoleCommandSender *asConsole() const override
     {
-        return core::isInstanceOf(*this, target);
+        return nullptr;
     }
 
-    // CommandSender
+    [[nodiscard]] BlockCommandSender *asBlock() const override
+    {
+        return nullptr;
+    }
+
+    [[nodiscard]] Actor *asActor() const override
+    {
+        return const_cast<EndstoneActorBase *>(this);
+    }
+
+    [[nodiscard]] Player *asPlayer() const override
+    {
+        return nullptr;
+    }
+
     void sendMessage(const Message &message) const override {}
 
     void sendErrorMessage(const Message &message) const override {}
 
-    [[nodiscard]] Server &getServer() const override { return server_; }
-
-    [[nodiscard]] std::string getName() const override { return CommandUtils::getActorName(getHandle()); }
-
-    // Actor
-    [[nodiscard]] const ActorType &getType() const override
+    [[nodiscard]] Server &getServer() const override
     {
-        const auto &canonical = getHandle().getActorIdentifier().getCanonicalName();
-        return server_.getRegistry<ActorType>().getOrThrow(ActorTypeId{canonical});
+        return server_;
     }
 
-    [[nodiscard]] std::uint64_t getRuntimeId() const override { return getHandle().getRuntimeID().raw_id; }
+    [[nodiscard]] std::string getName() const override
+    {
+        return CommandUtils::getActorName(getHandle());
+    }
+
+    // Actor
+    [[nodiscard]] Mob *asMob() const override
+    {
+        return nullptr;
+    }
+
+    [[nodiscard]] Item *asItem() const override
+    {
+        return nullptr;
+    }
+
+    [[nodiscard]] std::string getType() const override
+    {
+        return getHandle().getActorIdentifier().getCanonicalName();
+    }
+
+    [[nodiscard]] std::uint64_t getRuntimeId() const override
+    {
+        return getHandle().getRuntimeID().raw_id;
+    }
 
     [[nodiscard]] Location getLocation() const override
     {
@@ -149,11 +181,20 @@ public:
         return {delta.x, delta.y, delta.z};
     }
 
-    [[nodiscard]] bool isOnGround() const override { return getHandle().isOnGround(); }
+    [[nodiscard]] bool isOnGround() const override
+    {
+        return getHandle().isOnGround();
+    }
 
-    [[nodiscard]] bool isInWater() const override { return getHandle().isInWater(); }
+    [[nodiscard]] bool isInWater() const override
+    {
+        return getHandle().isInWater();
+    }
 
-    [[nodiscard]] bool isInLava() const override { return getHandle().isInLava(); }
+    [[nodiscard]] bool isInLava() const override
+    {
+        return getHandle().isInLava();
+    }
 
     [[nodiscard]] Level &getLevel() const override
     {
@@ -164,10 +205,13 @@ public:
 
     [[nodiscard]] Dimension &getDimension() const override
     {
-        return *server_.getEndstoneLevel()->getDimension(getHandle().getDimension().getDimensionId());
+        return *getLevel().getDimension(getHandle().getDimension().getName());
     }
 
-    void setRotation(float yaw, float pitch) override { getHandle().setRotationWrapped({pitch, yaw}); }
+    void setRotation(float yaw, float pitch) override
+    {
+        getHandle().setRotationWrapped({pitch, yaw});
+    }
 
     bool teleport(const Location &location) override
     {
@@ -188,13 +232,25 @@ public:
         return true;
     }
 
-    bool teleport(const Actor &target) override { return teleport(target.getLocation()); }
+    bool teleport(const Actor &target) override
+    {
+        return teleport(target.getLocation());
+    }
 
-    [[nodiscard]] std::int64_t getId() const override { return getHandle().getOrCreateUniqueID().raw_id; }
+    [[nodiscard]] std::int64_t getId() const override
+    {
+        return getHandle().getOrCreateUniqueID().raw_id;
+    }
 
-    void remove() override { getHandle().remove(); }
+    void remove() override
+    {
+        getHandle().remove();
+    }
 
-    [[nodiscard]] bool isDead() const override { return !getHandle().isAlive(); }
+    [[nodiscard]] bool isDead() const override
+    {
+        return !getHandle().isAlive();
+    }
 
     [[nodiscard]] bool isValid() const override
     {
@@ -205,15 +261,30 @@ public:
         return handle->isAlive();
     }
 
-    [[nodiscard]] std::vector<std::string> getScoreboardTags() const override { return getHandle().getTags(); }
+    [[nodiscard]] std::vector<std::string> getScoreboardTags() const override
+    {
+        return getHandle().getTags();
+    }
 
-    [[nodiscard]] bool addScoreboardTag(std::string tag) const override { return getHandle().addTag(tag); }
+    [[nodiscard]] bool addScoreboardTag(std::string tag) const override
+    {
+        return getHandle().addTag(tag);
+    }
 
-    [[nodiscard]] bool removeScoreboardTag(std::string tag) const override { return getHandle().removeTag(tag); }
+    [[nodiscard]] bool removeScoreboardTag(std::string tag) const override
+    {
+        return getHandle().removeTag(tag);
+    }
 
-    [[nodiscard]] bool isNameTagVisible() const override { return getHandle().canShowNameTag(); }
+    [[nodiscard]] bool isNameTagVisible() const override
+    {
+        return getHandle().canShowNameTag();
+    }
 
-    void setNameTagVisible(bool visible) override { getHandle().setNameTagVisible(visible); }
+    void setNameTagVisible(bool visible) override
+    {
+        getHandle().setNameTagVisible(visible);
+    }
 
     [[nodiscard]] bool isNameTagAlwaysVisible() const override
     {
@@ -227,13 +298,25 @@ public:
             static_cast<SynchedActorData::ID>(ActorDataIDs::NAMETAG_ALWAYS_SHOW), visible);
     }
 
-    [[nodiscard]] std::string getNameTag() const override { return getHandle().getNameTag(); }
+    [[nodiscard]] std::string getNameTag() const override
+    {
+        return getHandle().getNameTag();
+    }
 
-    void setNameTag(std::string name) override { getHandle().setNameTag(name); }
+    void setNameTag(std::string name) override
+    {
+        getHandle().setNameTag(name);
+    }
 
-    [[nodiscard]] std::string getScoreTag() const override { return getHandle().getScoreTag(); }
+    [[nodiscard]] std::string getScoreTag() const override
+    {
+        return getHandle().getScoreTag();
+    }
 
-    void setScoreTag(std::string score) override { getHandle().setScoreTag(score); }
+    void setScoreTag(std::string score) override
+    {
+        getHandle().setScoreTag(score);
+    }
 
     Handle &getHandle() const
     {

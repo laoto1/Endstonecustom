@@ -3,7 +3,6 @@ Classes relating to handling triggered code executions.
 """
 
 import enum
-import typing
 
 from endstone import GameMode, Player, Skin
 from endstone.actor import Actor, Item, Mob
@@ -90,8 +89,6 @@ __all__ = [
     "event_handler",
 ]
 
-_F = typing.TypeVar("_F", bound=(typing.Callable[..., None]))
-
 class EventPriority(enum.IntEnum):
     """
     Listeners are called in following order: LOWEST -> LOW -> NORMAL -> HIGH -> HIGHEST -> MONITOR
@@ -126,7 +123,6 @@ class Event:
     """
     Represents an event.
     """
-    def __init__(self, is_async: bool = False) -> None: ...
     @property
     def event_name(self) -> str:
         """
@@ -150,20 +146,24 @@ class Cancellable:
     Represents an event that may be cancelled by a plugin or the server.
     """
     @property
+    def cancelled(self) -> bool:
+        """
+        Gets or sets the cancellation state of this event. A cancelled event will not be executed in the server, but will still pass to other plugins. [Warning] Deprecated: Use is_cancelled instead.
+        """
+        ...
+    @cancelled.setter
+    def cancelled(self, arg1: bool) -> None: ...
+    @property
     def is_cancelled(self) -> bool:
         """
-        Gets or sets the cancellation state of this event.
-
-        A cancelled event will not be executed in the server, but will still pass to other plugins.
+        Gets or sets the cancellation state of this event. A cancelled event will not be executed in the server, but will still pass to other plugins.
         """
         ...
     @is_cancelled.setter
     def is_cancelled(self, arg1: bool) -> None: ...
     def cancel(self) -> None:
         """
-        Cancel this event.
-
-        A cancelled event will not be executed in the server, but will still pass to other plugins.
+        Cancel this event. A cancelled event will not be executed in the server, but will still pass to other plugins.
         """
         ...
 
@@ -423,15 +423,15 @@ class BlockPlaceEvent(BlockEvent, Cancellable):
         """
         ...
     @property
-    def block_placed(self) -> Block:
+    def block_placed_state(self) -> BlockState:
         """
-        Gets the block placed.
+        Gets the BlockState for the block which was placed.
         """
         ...
     @property
-    def block_replaced_state(self) -> BlockState:
+    def block_replaced(self) -> Block:
         """
-        Gets the BlockState for the block which was replaced.
+        Gets the block which was replaced.
         """
         ...
     @property
@@ -1154,7 +1154,6 @@ class WeatherChangeEvent(WeatherEvent, Cancellable):
         """
         ...
 
-@typing.overload
-def event_handler(__func: _F) -> _F: ...
-@typing.overload
-def event_handler(*, priority: EventPriority = ..., ignore_cancelled: bool = ...) -> typing.Callable[[_F], _F]: ...
+def event_handler(
+    func=None, *, priority: EventPriority = EventPriority.NORMAL, ignore_cancelled: bool = False
+) -> None: ...

@@ -20,7 +20,6 @@
 #include <vector>
 
 #include "endstone/actor/actor.h"
-#include "endstone/level/dimension.h"
 
 namespace endstone {
 
@@ -67,13 +66,13 @@ public:
     [[nodiscard]] virtual std::vector<Dimension *> getDimensions() const = 0;
 
     /**
-     * @brief Gets the dimension with the given id.
+     * @brief Gets the dimension with the given name.
      *
-     * @param id the id of the dimension to retrieve.
+     * @param name the name of the dimension to retrieve. For example, "overworld", "nether" or "the_end".
      *
-     * @return The Dimension with the given id, or nullptr if none exists
+     * @return The Dimension with the given name, or nullptr if none exists
      */
-    [[nodiscard]] virtual Dimension *getDimension(DimensionId id) const = 0;
+    [[nodiscard]] virtual Dimension *getDimension(std::string name) const = 0;
 
     /**
      * @brief Gets the Seed for this level.

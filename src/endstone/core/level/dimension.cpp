@@ -14,12 +14,13 @@
 
 #include "endstone/core/level/dimension.h"
 
+#include <endstone/core/actor/item.h>
+#include <endstone/core/inventory/item_stack.h>
+
 #include "bedrock/entity/components/actor_owner_component.h"
 #include "bedrock/world/level/block/bedrock_block_names.h"
 #include "bedrock/world/level/dimension/vanilla_dimensions.h"
-#include "endstone/core/actor/item.h"
 #include "endstone/core/block/block.h"
-#include "endstone/core/inventory/item_stack.h"
 #include "endstone/core/level/chunk.h"
 #include "endstone/core/level/level.h"
 
@@ -29,24 +30,23 @@ EndstoneDimension::EndstoneDimension(WeakRef<::Dimension> dimension, EndstoneLev
 {
 }
 
-DimensionId EndstoneDimension::getId() const
+std::string EndstoneDimension::getName() const
+{
+    return getHandle().getName();
+}
+
+Dimension::Type EndstoneDimension::getType() const
 {
     switch (getHandle().getDimensionId().runtime_id) {
     case VanillaDimensions::Overworld.runtime_id:
-        return Dimension::Overworld;
+        return Type::Overworld;
     case VanillaDimensions::Nether.runtime_id:
-        return Dimension::Nether;
+        return Type::Nether;
     case VanillaDimensions::TheEnd.runtime_id:
-        return Dimension::TheEnd;
+        return Type::TheEnd;
     default:
-        // TODO(fixme): return actual id after 1.26.20 update with custom dimension
-        return DimensionId(getHandle().getName());
+        return Type::Custom;
     }
-}
-
-std::string EndstoneDimension::getTranslationKey() const
-{
-    return getHandle().getLocalizationKey();
 }
 
 Level &EndstoneDimension::getLevel() const
@@ -104,10 +104,10 @@ Item &EndstoneDimension::dropItem(const Location location, const ItemStack &item
     return actor->getEndstoneActor<EndstoneItem>();
 }
 
-Actor *EndstoneDimension::spawnActor(Location location, ActorTypeId type)
+Actor *EndstoneDimension::spawnActor(Location location, std::string type)
 {
     auto &actor_factory = level_.getHandle().getActorFactory();
-    const auto id = ActorDefinitionIdentifier(std::string(type));
+    const auto id = ActorDefinitionIdentifier(type);
     auto entity = actor_factory.createSpawnedActor(id, nullptr, {location.getX(), location.getY(), location.getZ()},
                                                    {location.getPitch(), location.getYaw()});
     const auto *actor =
@@ -145,5 +145,5 @@ std::vector<Actor *> EndstoneDimension::getActors() const
 endstone::Dimension &Dimension::getEndstoneDimension() const
 {
     const auto &server = endstone::core::EndstoneServer::getInstance();
-    return *server.getEndstoneLevel()->getDimension(getDimensionId());
+    return *server.getEndstoneLevel()->getDimension(getDimensionId().runtime_id);
 }

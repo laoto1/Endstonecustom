@@ -10,9 +10,6 @@ from endstone.map import MapView
 from endstone.nbt import CompoundTag
 
 __all__ = [
-    "BookMeta",
-    "BookMetaGeneration",
-    "CrossbowMeta",
     "EquipmentSlot",
     "Inventory",
     "ItemFactory",
@@ -21,7 +18,6 @@ __all__ = [
     "ItemType",
     "MapMeta",
     "PlayerInventory",
-    "WritableBookMeta",
 ]
 
 class ItemStack:
@@ -89,8 +85,8 @@ class ItemStack:
         ...
     @nbt.setter
     def nbt(self, arg1: CompoundTag) -> None: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __eq__(self, arg0: ItemStack) -> bool: ...
+    def __ne__(self, arg0: ItemStack) -> bool: ...
     def __str__(self) -> str: ...
 
 class EquipmentSlot(enum.Enum):
@@ -150,8 +146,14 @@ class ItemType:
         """
         ...
     def __str__(self) -> str: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    @typing.overload
+    def __eq__(self, arg0: ItemType) -> bool: ...
+    @typing.overload
+    def __eq__(self, arg0: str) -> bool: ...
+    @typing.overload
+    def __ne__(self, arg0: ItemType) -> bool: ...
+    @typing.overload
+    def __ne__(self, arg0: str) -> bool: ...
 
 class ItemMeta:
     """
@@ -296,117 +298,6 @@ class MapMeta(ItemMeta):
         ...
     @map_view.setter
     def map_view(self, arg1: MapView) -> None: ...
-
-class WritableBookMeta(ItemMeta):
-    """
-    Represents the metadata for a writable book.
-    """
-    @property
-    def has_pages(self) -> bool:
-        """
-        Checks for the existence of pages in the book.
-        """
-        ...
-    def get_page(self, page: int) -> str:
-        """
-        Gets the specified page in the book.
-        """
-        ...
-    def set_page(self, page: int, data: str) -> None:
-        """
-        Sets the specified page in the book.
-        """
-        ...
-    @property
-    def pages(self) -> list[str]:
-        """
-        Gets or sets all the pages in the book.
-        """
-        ...
-    @pages.setter
-    def pages(self, arg1: list[str]) -> None: ...
-    def add_page(self, *args: str) -> None:
-        """
-        Adds new pages to the end of the book.
-        """
-        ...
-    @property
-    def page_count(self) -> int:
-        """
-        Gets the number of pages in the book.
-        """
-        ...
-
-class BookMetaGeneration(enum.Enum):
-    ORIGINAL = 0
-    COPY_OF_ORIGINAL = 1
-    COPY_OF_COPY = 2
-
-class BookMeta(WritableBookMeta):
-    """
-    Represents the metadata for a written book.
-    """
-    @property
-    def has_title(self) -> bool:
-        """
-        Checks for the existence of a title in the book.
-        """
-        ...
-    @property
-    def title(self) -> str:
-        """
-        Gets or sets the title of the book.
-        """
-        ...
-    @title.setter
-    def title(self, arg1: str | None) -> None: ...
-    @property
-    def has_author(self) -> bool:
-        """
-        Checks for the existence of an author in the book.
-        """
-        ...
-    @property
-    def author(self) -> str:
-        """
-        Gets or sets the author of the book.
-        """
-        ...
-    @author.setter
-    def author(self, arg1: str | None) -> None: ...
-    @property
-    def has_generation(self) -> bool:
-        """
-        Checks for the existence of generation level in the book.
-        """
-        ...
-    @property
-    def generation(self) -> BookMetaGeneration | None:
-        """
-        Gets or sets the generation of the book.
-        """
-        ...
-    @generation.setter
-    def generation(self, arg1: BookMetaGeneration | None) -> None: ...
-
-class CrossbowMeta(ItemMeta):
-    """
-    Represents the metadata for a crossbow.
-    """
-    @property
-    def has_charged_projectile(self) -> bool:
-        """
-        Returns whether the crossbow has a charged projectile.
-        """
-        ...
-    @property
-    def charged_projectile(self) -> ItemStack | None:
-        """
-        Gets or sets the charged projectile.
-        """
-        ...
-    @charged_projectile.setter
-    def charged_projectile(self, arg1: ItemStack | None) -> None: ...
 
 class ItemFactory:
     def get_item_meta(self, type: str) -> ItemMeta:

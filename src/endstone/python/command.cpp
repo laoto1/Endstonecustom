@@ -14,6 +14,8 @@
 
 #include "endstone_python.h"
 
+namespace py = pybind11;
+
 namespace endstone::python {
 
 class PyCommandExecutor : public CommandExecutor, public py::trampoline_self_life_support {
@@ -39,7 +41,7 @@ Command createCommand(const std::string &name, const std::optional<std::string> 
 }
 }  // namespace
 
-void init_command(py::module &m, py_class<CommandSender> &command_sender)
+void init_command(py::module &m, py::class_<CommandSender, Permissible> &command_sender)
 {
     command_sender
         .def(
@@ -53,18 +55,18 @@ void init_command(py::module &m, py_class<CommandSender> &command_sender)
                                "Returns the server instance that this command is running on")
         .def_property_readonly("name", &CommandSender::getName, "Gets the name of this command sender");
 
-    py_class<BlockCommandSender>(m, "BlockCommandSender", "Represents a block command sender.")
+    py::class_<BlockCommandSender, CommandSender>(m, "BlockCommandSender", "Represents a block command sender.")
         .def_property_readonly("block", &BlockCommandSender::getBlock,
                                "Returns the block this command sender belongs to");
 
-    py_class<CommandSenderWrapper>(
+    py::class_<CommandSenderWrapper, CommandSender>(
         m, "CommandSenderWrapper",
         "Represents a wrapper that forwards commands to the wrapped CommandSender and captures its output")
         .def(py::init<CommandSender &, CommandSenderWrapper::Callback, CommandSenderWrapper::Callback>(),
              py::arg("sender"), py::arg("on_message") = CommandSenderWrapper::Callback{},
              py::arg("on_error") = CommandSenderWrapper::Callback{});
 
-    py_class<ConsoleCommandSender>(m, "ConsoleCommandSender", "Represents a console command sender.");
+    py::class_<ConsoleCommandSender, CommandSender>(m, "ConsoleCommandSender", "Represents a console command sender.");
 
     py::class_<Command, std::shared_ptr<Command>>(m, "Command",
                                                   "Represents a Command, which executes various tasks upon user input")

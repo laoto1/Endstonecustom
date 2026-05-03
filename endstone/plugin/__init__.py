@@ -14,29 +14,29 @@ from endstone.event import Event
 
 class Plugin(_Plugin):
     # Metadata
-    version: str | None = None
-    api_version: str | None = None
+    version = None
+    api_version = None
 
     # Optional metadata
-    description: str | None = None
-    load: str | None = None
-    authors: list[str] | None = None
-    contributors: list[str] | None = None
-    website: str | None = None
-    prefix: str | None = None
+    description = None
+    load = None
+    authors = None
+    contributors = None
+    website = None
+    prefix = None
 
     # Dependencies
-    provides: list[str] | None = None
-    depend: list[str] | None = None
-    soft_depend: list[str] | None = None
-    load_before: list[str] | None = None
+    provides = None
+    depend = None
+    soft_depend = None
+    load_before = None
 
     # Command
-    commands: dict | None = None
+    commands = None
 
     # Permissions
-    default_permission: str | None = None
-    permissions: dict | None = None
+    default_permission = None
+    permissions = None
 
     def __init__(self):
         _Plugin.__init__(self)
@@ -85,11 +85,9 @@ class Plugin(_Plugin):
             event_cls = params[0].annotation
             priority = getattr(func, "_priority")
             ignore_cancelled = getattr(func, "_ignore_cancelled")
-            if event_cls.__module__.startswith("endstone."):
-                event_name = event_cls.__name__
-            else:
-                event_name = f"{event_cls.__module__}.{event_cls.__qualname__}"
-            self.server.plugin_manager.register_event(event_name, func, priority, self, ignore_cancelled)
+            self.server.plugin_manager.register_event(
+                getattr(event_cls, "NAME", event_cls.__name__), func, priority, self, ignore_cancelled
+            )
 
     @property
     def config(self) -> dict:

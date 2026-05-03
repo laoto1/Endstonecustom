@@ -26,8 +26,8 @@
 #include "endstone/form/modal_form.h"
 #include "endstone/game_mode.h"
 #include "endstone/inventory/player_inventory.h"
-#include "endstone/level/location.h"
 #include "endstone/map/map_view.h"
+#include "endstone/offline_player.h"
 #include "endstone/scoreboard/scoreboard.h"
 #include "endstone/skin.h"
 #include "endstone/util/socket_address.h"
@@ -38,7 +38,7 @@ namespace endstone {
 /**
  * @brief Represents a player.
  */
-class Player : public Mob {
+class Player : public Mob, public OfflinePlayer {
 protected:
     using FormVariant = std::variant<MessageForm, ActionForm, ModalForm>;
 
@@ -49,13 +49,6 @@ public:
      * @return Player name or null if we have not seen a name for this player yet
      */
     [[nodiscard]] std::string getName() const override = 0;
-
-    /**
-     * @brief Returns the UUID of this player
-     *
-     * @return Player UUID
-     */
-    [[nodiscard]] virtual UUID getUniqueId() const = 0;
 
     /**
      * @brief Checks if this player is a server operator

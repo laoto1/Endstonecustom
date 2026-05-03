@@ -114,7 +114,7 @@ class BlockType:
         Returns true if this BlockType has a corresponding ItemType.
         """
         ...
-    def create_block_data(self) -> BlockData:
+    def create_block_data(*args, **kwargs) -> None:
         """
         Creates a new BlockData instance for this block type, with all properties initialized to defaults.
         """
@@ -136,12 +136,6 @@ class BlockData:
     def type(self) -> str:
         """
         Get the block type represented by this block data.
-        """
-        ...
-    @property
-    def translation_key(self) -> str:
-        """
-        Gets the translation key for this block.
         """
         ...
     @property

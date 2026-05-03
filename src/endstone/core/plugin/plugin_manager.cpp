@@ -66,11 +66,6 @@ EndstonePluginManager::EndstonePluginManager(Server &server) : server_(server)
     default_perms_[PermissionLevel::Operator] = {};
     default_perms_[PermissionLevel::Console] = {};
 }
-EndstonePluginManager::~EndstonePluginManager() {
-    while (!plugin_loaders_.empty()) {
-        plugin_loaders_.pop_back();
-    }
-}
 
 void EndstonePluginManager::registerLoader(std::unique_ptr<PluginLoader> loader)
 {
@@ -479,8 +474,8 @@ void EndstonePluginManager::disablePlugin(Plugin &plugin)
 
 void EndstonePluginManager::disablePlugins()
 {
-    for (auto it = plugins_.rbegin(); it != plugins_.rend(); ++it) {
-        disablePlugin(**it);
+    for (const auto &plugin : plugins_) {
+        disablePlugin(*plugin);
     }
 }
 
@@ -491,11 +486,7 @@ void EndstonePluginManager::clearPlugins()
     lookup_names_.clear();
     // TODO: recreate dependency graph
     event_handlers_.clear();
-
-    while (!plugin_loaders_.empty()) {
-        plugin_loaders_.pop_back();
-    }
-
+    plugin_loaders_.clear();
     permissions_.clear();
     default_perms_[PermissionLevel::Default].clear();
     default_perms_[PermissionLevel::Operator].clear();

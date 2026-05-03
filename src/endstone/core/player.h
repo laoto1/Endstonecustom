@@ -23,6 +23,7 @@
 #include "bedrock/world/events/player_events.h"
 #include "endstone/core/actor/mob.h"
 #include "endstone/core/inventory/player_inventory.h"
+#include "endstone/core/util/uuid.h"
 #include "endstone/player.h"
 #include "permissions/permissible_base.h"
 
@@ -48,6 +49,7 @@ public:
     [[nodiscard]] std::unordered_set<PermissionAttachmentInfo *> getEffectivePermissions() const override;
 
     // CommandSender
+    [[nodiscard]] Player *asPlayer() const override;
     void sendMessage(const Message &message) const override;
     void sendErrorMessage(const Message &message) const override;
     [[nodiscard]] std::string getName() const override;
@@ -133,6 +135,8 @@ public:
 private:
     friend class ::ServerNetworkHandler;
 
+    UUID uuid_;
+    std::string xuid_;
     std::shared_ptr<PermissibleBase> perm_;
     std::unique_ptr<EndstonePlayerInventory> inventory_;
     std::unique_ptr<EndstoneInventory> ender_chest_;

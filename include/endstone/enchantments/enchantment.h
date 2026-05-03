@@ -14,13 +14,17 @@
 
 #pragma once
 
+#include "endstone/detail.h"
+#include "endstone/identifier.h"
 #include "endstone/registry.h"
+#include "endstone/server.h"
 
 namespace endstone {
 class ItemStack;
 using EnchantmentId = Identifier<class Enchantment>;
-class Enchantment : public Registry<Enchantment>::Type {
+class Enchantment {
 public:
+    ENDSTONE_REGISTRY_TYPE(Enchantment)
     /**
      * @brief Provides protection against environmental damage
      */
@@ -231,6 +235,22 @@ public:
      */
     static constexpr auto Lunge = EnchantmentId::minecraft("lunge");
 
+    virtual ~Enchantment() = default;
+
+    /**
+     * @brief Return the identifier for this enchantment.
+     *
+     * @return this enchantment's id
+     */
+    [[nodiscard]] virtual EnchantmentId getId() const = 0;
+
+    /**
+     * @brief Get the translation key, suitable for use in a translation component.
+     *
+     * @return the translation key
+     */
+    [[nodiscard]] virtual std::string getTranslationKey() const = 0;
+
     /**
      * @brief Gets the maximum level that this Enchantment may become.
      *
@@ -262,5 +282,15 @@ public:
      * @return True if the enchantment may be applied, otherwise False
      */
     [[nodiscard]] virtual bool canEnchantItem(const ItemStack &item) const = 0;
+
+    bool operator==(const EnchantmentId &other) const { return getId() == other; }
+
+    bool operator!=(const EnchantmentId &other) const { return !(*this == other); }
+
+    bool operator==(const Enchantment &other) const { return getId() == other.getId(); }
+
+    bool operator!=(const Enchantment &other) const { return !(*this == other); }
+
+    operator EnchantmentId() const { return getId(); }
 };
 }  // namespace endstone

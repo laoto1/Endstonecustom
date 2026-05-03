@@ -3,13 +3,11 @@ import logging
 import platform
 import sys
 import time
-from typing import Any, Callable, TypeVar, cast
 
 import click
 import colorlog
 
 from endstone._version import __version__
-from endstone.cli.base import Bootstrap
 
 handler = colorlog.StreamHandler()
 handler.setFormatter(
@@ -31,21 +29,19 @@ logger = logging.getLogger(__name__)
 
 __all__ = ["main"]
 
-_F = TypeVar("_F", bound=Callable[..., Any])
 
-
-def catch_exceptions(func: _F) -> _F:
+def catch_exceptions(func):
     """Decorator to catch and log exceptions."""
 
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):  # type: ignore[no-untyped-def]
+    def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except Exception as e:
             logger.exception(e)
             sys.exit(-1)
 
-    return cast(_F, wrapper)
+    return wrapper
 
 
 @click.group(invoke_without_command=True, help="Starts an endstone server.")
@@ -79,11 +75,10 @@ def catch_exceptions(func: _F) -> _F:
 @click.version_option(__version__)
 @click.pass_context
 @catch_exceptions
-def main(ctx: click.Context, server_folder: str, no_confirm: bool, remote: str, interactive: bool) -> None:
+def main(ctx, server_folder: str, no_confirm: bool, remote: str, interactive: bool) -> None:
     if ctx.invoked_subcommand is not None:
         return
 
-    cls: type[Bootstrap]
     system = platform.system()
     if system == "Windows":
         from .windows import WindowsBootstrap
@@ -98,25 +93,9 @@ def main(ctx: click.Context, server_folder: str, no_confirm: bool, remote: str, 
         raise NotImplementedError(f"{system} is not supported.")
 
     bootstrap = cls(server_folder=server_folder, no_confirm=no_confirm, remote=remote, interactive=interactive)
-    restart_marker = bootstrap.server_path / ".endstone_restart"
+    exit_code = bootstrap.run()
+    if exit_code != 0:
+        logger.error(f"Server exited with non-zero code {exit_code}.")
+        time.sleep(2)
 
-    while True:
-        exit_code = bootstrap.run()
-
-        if restart_marker.exists():
-            try:
-                timestamp = float(restart_marker.read_text().strip())
-                elapsed = time.time() - timestamp
-                if elapsed < 60:
-                    restart_marker.unlink()
-                    logger.info("Server is restarting...")
-                    continue
-            except (ValueError, OSError):
-                pass
-            restart_marker.unlink(missing_ok=True)
-
-        if exit_code != 0:
-            logger.error(f"Server exited with non-zero code {exit_code}.")
-            time.sleep(2)
-
-        sys.exit(exit_code)
+    sys.exit(exit_code)

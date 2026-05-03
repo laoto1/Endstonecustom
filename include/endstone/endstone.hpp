@@ -25,7 +25,6 @@ static_assert(_ITERATOR_DEBUG_LEVEL == 0,
 #endif
 
 #include "actor/actor.h"
-#include "actor/actor_type.h"
 #include "actor/item.h"
 #include "actor/mob.h"
 #include "attribute/attribute.h"
@@ -164,7 +163,6 @@ static_assert(_ITERATOR_DEBUG_LEVEL == 0,
 #include "map/map_renderer.h"
 #include "map/map_view.h"
 #include "message.h"
-#include "nbt/io.h"
 #include "nbt/tag.h"
 #include "offline_player.h"
 #include "permissions/permissible.h"

@@ -11,7 +11,6 @@ from typing import Any, Callable, Dict, Set, final
 import aiohttp
 
 import endstone.asyncio
-from endstone.metrics.charts.custom_chart import CustomChart
 
 
 class MetricsBase(ABC):
@@ -52,13 +51,13 @@ class MetricsBase(ABC):
         self._log_errors = log_errors
         self._log_sent_data = log_sent_data
         self._log_response_status_text = log_response_status_text
-        self._custom_charts: Set[CustomChart] = set()
-        self._future: concurrent.futures.Future[Any] | None = None
+        self._custom_charts: Set = set()
+        self._future: concurrent.futures.Future | None = None
 
         if self.enabled:
             self._future = endstone.asyncio.submit(self._start_submitting())
 
-    def shutdown(self) -> None:
+    def shutdown(self):
         if self._future:
             self._future.cancel()
             try:
@@ -127,7 +126,7 @@ class MetricsBase(ABC):
         logging.warning(message, exc_info=exception)
 
     @final
-    def add_custom_chart(self, chart: CustomChart) -> None:
+    def add_custom_chart(self, chart: Any):
         """
         Adds a custom chart.
 
@@ -137,7 +136,7 @@ class MetricsBase(ABC):
         self._custom_charts.add(chart)
 
     @final
-    async def _start_submitting(self) -> None:
+    async def _start_submitting(self):
         """
         Starts the submitting process with initial and periodic delays.
         """
@@ -157,15 +156,15 @@ class MetricsBase(ABC):
             await asyncio.sleep(30 * 60)
 
     @final
-    def _submit_data(self) -> None:
+    def _submit_data(self):
         """
         Constructs the JSON data and sends it to bStats.
         """
 
-        platform_data: dict[str, Any] = {}
+        platform_data = {}
         self.append_platform_data(platform_data)
 
-        service_data: dict[str, Any] = {}
+        service_data = {}
         self.append_service_data(service_data)
 
         chart_data = []
@@ -186,7 +185,7 @@ class MetricsBase(ABC):
         platform_data["service"] = service_data
         platform_data["serverUUID"] = str(self._server_uuid)
 
-        def send_callback(fut: concurrent.futures.Future[Any]) -> None:
+        def send_callback(fut: concurrent.futures.Future):
             try:
                 fut.result()
             except Exception as e:
@@ -197,7 +196,7 @@ class MetricsBase(ABC):
         future.add_done_callback(send_callback)
 
     @final
-    async def _send_data(self, data: Dict[str, Any]) -> None:
+    async def _send_data(self, data: Dict[str, Any]):
         """
         Sends the JSON data to bStats.
 

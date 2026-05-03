@@ -5,7 +5,6 @@ from pathlib import Path
 
 import pytest
 from endstone import Server
-from endstone.level import Dimension
 from endstone.plugin import Plugin
 
 # =============================================================================
@@ -295,7 +294,7 @@ def test_create_map(server: Server) -> None:
     """Test creating a new map."""
     level = server.level
     assert level is not None
-    dimension = level.get_dimension(Dimension.OVERWORLD)
+    dimension = level.get_dimension("overworld")
     assert dimension is not None
     view = server.create_map(dimension)
     assert view.id != -1, f"Expected valid map id, got {view.id}"

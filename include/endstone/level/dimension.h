@@ -18,42 +18,43 @@
 #include <string>
 #include <vector>
 
-#include "endstone/actor/actor.h"
-#include "endstone/actor/item.h"
 #include "endstone/block/block.h"
-#include "endstone/identifier.h"
 #include "endstone/inventory/item_stack.h"
 #include "endstone/level/chunk.h"
+#include "endstone/util/result.h"
 
 namespace endstone {
-
-class Dimension;
-using DimensionId = Identifier<Dimension>;
 
 /**
  * @brief Represents a dimension within a Level.
  */
 class Dimension {
 public:
-    static constexpr auto Overworld = DimensionId::minecraft("overworld");
-    static constexpr auto Nether = DimensionId::minecraft("nether");
-    static constexpr auto TheEnd = DimensionId::minecraft("the_end");
+    /**
+     * @brief Represents various dimension types.
+     */
+    enum class Type {
+        Overworld = 0,
+        Nether = 1,
+        TheEnd = 2,
+        Custom = 999
+    };
 
     virtual ~Dimension() = default;
 
     /**
-     * @brief Return the identifier of this dimension.
+     * @brief Gets the name of this dimension
      *
-     * @return this dimension's identifier
+     * @return Name of this dimension
      */
-    [[nodiscard]] virtual DimensionId getId() const = 0;
+    [[nodiscard]] virtual std::string getName() const = 0;
 
     /**
-     * @brief Get the translation key, suitable for use in a translation component.
+     * @brief Gets the type of this dimension
      *
-     * @return the translation key
+     * @return Type of this dimension
      */
-    [[nodiscard]] virtual std::string getTranslationKey() const = 0;
+    [[nodiscard]] virtual Type getType() const = 0;
 
     /**
      * @brief Gets the level to which this dimension belongs
@@ -127,10 +128,10 @@ public:
      * @brief Creates an actor at the given Location
      *
      * @param location The location to spawn the actor
-     * @param type The actor type to spawn
+     * @param type The actor to spawn
      * @return Resulting Actor of this method
      */
-    [[nodiscard]] virtual Actor *spawnActor(Location location, ActorTypeId type) = 0;
+    [[nodiscard]] virtual Actor *spawnActor(Location location, std::string type) = 0;
 
     /**
      * @brief Get a list of all actors in this dimension
@@ -148,7 +149,7 @@ inline std::unique_ptr<Block> Location::getBlock() const
 inline float Location::distanceSquared(const Location &other) const
 {
     Preconditions::checkArgument(dimension_ == other.dimension_, "Cannot measure distance between {} and {}.",
-                                 dimension_->getId(), other.dimension_->getId());
+                                 dimension_->getName(), other.dimension_->getName());
     return ((x_ - other.x_) * (x_ - other.x_)) + ((y_ - other.y_) * (y_ - other.y_)) +
            ((z_ - other.z_) * (z_ - other.z_));
 }
@@ -159,6 +160,6 @@ struct fmt::formatter<endstone::Dimension> : formatter<string_view> {
     template <typename FormatContext>
     auto format(const endstone::Dimension &self, FormatContext &ctx) const -> format_context::iterator
     {
-        return fmt::format_to(ctx.out(), "Dimension(id={})", self.getId());
+        return fmt::format_to(ctx.out(), "Dimension(name={})", self.getName());
     }
 };

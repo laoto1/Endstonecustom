@@ -21,12 +21,3 @@ OwnerPtr<EntityContext> ActorFactory::createSpawnedActor(const ActorDefinitionId
 {
     return BEDROCK_CALL(&ActorFactory::createSpawnedActor, this, identifier, spawner, position, rotation);
 }
-
-std::vector<std::string> ActorFactory::generateActorIdentifierList() const
-{
-    std::vector<std::string> result;
-    for (const auto &key : factory_function_ | std::views::keys) {
-        result.emplace_back(key);
-    }
-    return result;
-}

@@ -18,7 +18,6 @@
 #include <string>
 #include <unordered_set>
 
-#include "endstone/object.h"
 #include "endstone/permissions/permission_attachment_info.h"
 #include "endstone/permissions/permission_level.h"
 #include "endstone/util/result.h"
@@ -33,8 +32,10 @@ class PermissionAttachment;
 /**
  * @brief Represents an object that may become a server operator and can be assigned permissions.
  */
-class Permissible : public Object, public std::enable_shared_from_this<Permissible> {
+class Permissible {
 public:
+    virtual ~Permissible() = default;
+
     /**
      * @brief Gets the permission level of this object
      *
@@ -114,5 +115,12 @@ public:
      * @return Set of currently effective permissions
      */
     [[nodiscard]] virtual std::unordered_set<PermissionAttachmentInfo *> getEffectivePermissions() const = 0;
+
+    /**
+     * @brief Casts a Permissible as CommandSender
+     *
+     * @return CommandSender, nullptr if not a CommandSender
+     */
+    [[nodiscard]] virtual CommandSender *asCommandSender() const = 0;
 };
 }  // namespace endstone

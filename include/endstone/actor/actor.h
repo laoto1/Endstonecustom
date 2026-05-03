@@ -18,11 +18,12 @@
 #include <string>
 #include <vector>
 
-#include "endstone/actor/actor_type.h"
 #include "endstone/command/command_sender.h"
 #include "endstone/level/location.h"
 
 namespace endstone {
+class Item;
+class Mob;
 class Level;
 /**
  * @brief Represents a base actor in the level.
@@ -30,11 +31,27 @@ class Level;
 class Actor : public CommandSender {
 public:
     /**
+     * @brief Gets an Actor as Mob
+     *
+     * @return Mob, nullptr if not an Mob
+     */
+    [[nodiscard]] virtual Mob *asMob() const = 0;
+
+    /**
+     * @brief Gets an Actor as Item
+     *
+     * @return Item, nullptr if not an Item
+     */
+    [[nodiscard]] virtual Item *asItem() const = 0;
+
+    /**
      * @brief Get the type of the actor.
+     *
+     * This method returns the type of the actor as a string, for example, minecraft:pig.
      *
      * @return The type of the actor.
      */
-    [[nodiscard]] virtual const ActorType &getType() const = 0;
+    [[nodiscard]] virtual std::string getType() const = 0;
 
     /**
      * Returns the runtime id for this actor

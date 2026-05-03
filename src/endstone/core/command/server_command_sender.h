@@ -18,7 +18,6 @@
 
 #include "endstone/core/permissions/permissible_base.h"
 #include "endstone/core/server.h"
-#include "endstone/core/type.h"
 
 namespace endstone::core {
 template <typename Interface>
@@ -85,14 +84,24 @@ public:
         return perm_->getEffectivePermissions();
     }
 
-    [[nodiscard]] const std::type_info &getClassTypeId() const override
+    [[nodiscard]] ConsoleCommandSender *asConsole() const override
     {
-        return typeid(Interface);
+        return nullptr;
     }
 
-    [[nodiscard]] bool isInstanceOf(const std::type_info &target) const override
+    [[nodiscard]] BlockCommandSender *asBlock() const override
     {
-        return core::isInstanceOf(*this, target);
+        return nullptr;
+    }
+
+    [[nodiscard]] Actor *asActor() const override
+    {
+        return nullptr;
+    }
+
+    [[nodiscard]] Player *asPlayer() const override
+    {
+        return nullptr;
     }
 
 private:
