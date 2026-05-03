@@ -1,0 +1,10 @@
+.cache/*
+.idea/*
+.venv/*
+venv/*
+bedrock_server
+build
+dist
+stubs
+wheelhouse
+CMakeUserPresets.json

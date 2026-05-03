@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+  push:
+    branches:
+      - main
+      - stable
+      - v*
+
+permissions: read-all
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [ Release ]
+        os: [ ubuntu-22.04, windows-2022 ]
+        include:
+          - os: ubuntu-22.04
+            build_type: Debug
+            coverage: true
+
+    name: Build on ${{ matrix.os }} (${{ matrix.build_type }})
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Set up Clang (Linux)
+        if: runner.os == 'Linux'
+        uses: ./.github/actions/setup-clang
+
+      - name: Set up MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86_64
+
+      - name: Set up CMake and Ninja
+        uses: lukka/get-cmake@latest
+
+      - name: Set up Conan
+        uses: ./.github/actions/setup-conan
+        with:
+          build-type: ${{ matrix.build_type }}
+
+      - name: Build with CMake
+        run: |
+          cd build/${{ matrix.build_type }}
+          cmake ../.. -G Ninja -DCMAKE_TOOLCHAIN_FILE="generators/conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ${{ matrix.coverage && '-DCODE_COVERAGE=ON' || '' }}
+          cmake --build .
+
+      - name: Run Tests
+        run: ctest --test-dir build/${{ matrix.build_type }}
+
+      - name: Generate Coverage Report
+        if: matrix.coverage
+        run: |
+          pip install gcovr
+          gcovr -r . --filter src/endstone_core/ --gcov-executable "llvm-cov gcov" --xml coverage.xml build/${{ matrix.build_type }}
+
+      - name: Upload Coverage to Codecov
+        if: matrix.coverage
+        uses: codecov/codecov-action@v6
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
