@@ -442,8 +442,6 @@ For latest updates join the chat on
       
         
       
-        
-      
     
     
     
@@ -588,34 +586,6 @@ For latest updates join the chat on
     
   
     Contributing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../getting-started/faq/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    FAQ
   
 
     
@@ -2585,17 +2555,6 @@ For latest updates join the chat on
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-    <a href="#classes" class="md-nav__link">
-      <span class="md-ellipsis">
-        Classes
-      </span>
-    </a>
-
-    <!-- Table of contents list -->
-    
-</li>
-      
-        <li class="md-nav__item">
     <a href="#public-functions" class="md-nav__link">
       <span class="md-ellipsis">
         Public Functions
@@ -2610,17 +2569,6 @@ For latest updates join the chat on
     <a href="#public-functions-inherited-from-endstoneiregistry" class="md-nav__link">
       <span class="md-ellipsis">
         Public Functions inherited from endstone::IRegistry
-      </span>
-    </a>
-
-    <!-- Table of contents list -->
-    
-</li>
-      
-        <li class="md-nav__item">
-    <a href="#protected-functions-inherited-from-endstoneiregistry" class="md-nav__link">
-      <span class="md-ellipsis">
-        Protected Functions inherited from endstone::IRegistry
       </span>
     </a>
 
@@ -2716,19 +2664,6 @@ For latest updates join the chat on
 </li>
                 
             
-                
-                    <li class="md-nav__item">
-    <a href="#function-size" class="md-nav__link">
-      <span class="md-ellipsis">
-        function size
-      </span>
-    </a>
-
-    <!-- Table of contents list -->
-    
-</li>
-                
-            
         </ul>
     </nav>
     
@@ -2775,21 +2710,6 @@ For latest updates join the chat on
 <li><code>#include &lt;endstone/registry.h&gt;</code></li>
 </ul>
 <p>Inherits the following classes: <a href="../classendstone_1_1IRegistry/">endstone::IRegistry</a></p>
-<h2 id="classes">Classes<a class="headerlink" href="#classes" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: right;">Type</th>
-<th style="text-align: left;">Name</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: right;">class</td>
-<td style="text-align: left;"><a href="../classendstone_1_1Registry_1_1Type/"><strong>Type</strong></a> <br><em>CRTP base for registry-backed types identified by an</em> <a href="../classendstone_1_1Identifier/"><em><strong>Identifier</strong></em></a> <em>.</em></td>
-</tr>
-</tbody>
-</table>
 <h2 id="public-functions">Public Functions<a class="headerlink" href="#public-functions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2819,10 +2739,6 @@ For latest updates join the chat on
 <td style="text-align: right;">virtual <a href="../classendstone_1_1Identifier/"><strong>const</strong></a> <a href="../classendstone_1_1Identifier/"><strong>T</strong></a> &amp;</td>
 <td style="text-align: left;"><a href="#function-getorthrow-22"><strong>getOrThrow</strong></a> (<a href="../classendstone_1_1Identifier/"><strong>Identifier</strong></a>&lt; <a href="../classendstone_1_1Identifier/"><strong>T</strong></a> &gt; id) const<br><em>Get the object by its identifier or throw if missing.</em></td>
 </tr>
-<tr>
-<td style="text-align: right;">virtual std::size_t</td>
-<td style="text-align: left;"><a href="#function-size"><strong>size</strong></a> () override const = 0<br></td>
-</tr>
 </tbody>
 </table>
 <h2 id="public-functions-inherited-from-endstoneiregistry">Public Functions inherited from endstone::IRegistry<a class="headerlink" href="#public-functions-inherited-from-endstoneiregistry" title="Permanent link">&para;</a></h2>
@@ -2836,36 +2752,8 @@ For latest updates join the chat on
 </thead>
 <tbody>
 <tr>
-<td style="text-align: right;">virtual std::size_t</td>
-<td style="text-align: left;"><a href="../classendstone_1_1IRegistry/#function-size"><strong>size</strong></a> () const = 0<br></td>
-</tr>
-<tr>
 <td style="text-align: right;">virtual</td>
 <td style="text-align: left;"><a href="../classendstone_1_1IRegistry/#function-iregistry"><strong>~IRegistry</strong></a> () = default<br></td>
-</tr>
-</tbody>
-</table>
-<h2 id="protected-functions-inherited-from-endstoneiregistry">Protected Functions inherited from endstone::IRegistry<a class="headerlink" href="#protected-functions-inherited-from-endstoneiregistry" title="Permanent link">&para;</a></h2>
-<p>See <a href="../classendstone_1_1IRegistry/">endstone::IRegistry</a></p>
-<table>
-<thead>
-<tr>
-<th style="text-align: right;">Type</th>
-<th style="text-align: left;">Name</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: right;">virtual <a href="../classendstone_1_1Identifier/"><strong>void</strong></a></td>
-<td style="text-align: left;"><a href="../classendstone_1_1IRegistry/#function-foreach0"><strong>forEach0</strong></a> (std::function&lt; <a href="../classendstone_1_1Identifier/"><strong>bool</strong></a>(<a href="../classendstone_1_1Identifier/"><strong>const</strong></a> <a href="../classendstone_1_1Identifier/"><strong>void</strong></a> *)&gt; func) const = 0<br></td>
-</tr>
-<tr>
-<td style="text-align: right;">virtual <a href="../classendstone_1_1Identifier/"><strong>const</strong></a> <a href="../classendstone_1_1Identifier/"><strong>void</strong></a> *</td>
-<td style="text-align: left;"><a href="../classendstone_1_1IRegistry/#function-get0"><strong>get0</strong></a> (std::string_view id) noexcept const = 0<br></td>
-</tr>
-<tr>
-<td style="text-align: right;">virtual <a href="../classendstone_1_1Identifier/"><strong>const</strong></a> std::type_info &amp;</td>
-<td style="text-align: left;"><a href="../classendstone_1_1IRegistry/#function-gettypeid"><strong>getTypeId</strong></a> () noexcept const = 0<br></td>
 </tr>
 </tbody>
 </table>
@@ -2953,12 +2841,6 @@ For latest updates join the chat on
 <ul>
 <li><code>std::invalid_argument</code> if no object with the given identifier exists. </li>
 </ul>
-<hr>
-
-<h3 id="function-size">function size<a class="headerlink" href="#function-size" title="Permanent link">&para;</a></h3>
-<div class="language-C++ highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">virtual</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">endstone</span><span class="o">::</span><span class="n">Registry</span><span class="o">::</span><span class="n">size</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
-</span></code></pre></div>
-<p>Implements <a href="../classendstone_1_1IRegistry/#function-size"><em>endstone::IRegistry::size</em></a></p>
 <hr>
 
 <hr />

@@ -15,7 +15,6 @@ Here are the classes, structs, unions and interfaces with brief descriptions:
     * **class** [**ActorRemoveEvent**](classendstone_1_1ActorRemoveEvent.md) _Called when an_ [_**Actor**_](classendstone_1_1Actor.md) _is removed._    
     * **class** [**ActorSpawnEvent**](classendstone_1_1ActorSpawnEvent.md) _Called when an_ [_**Actor**_](classendstone_1_1Actor.md) _is spawned into a world._    
     * **class** [**ActorTeleportEvent**](classendstone_1_1ActorTeleportEvent.md) _Called when a non-player entity is teleported from one location to another._     
-    * **class** [**ActorType**](classendstone_1_1ActorType.md)     
     * **class** [**Attribute**](classendstone_1_1Attribute.md) _All attribute types._     
     * **class** [**AttributeInstance**](classendstone_1_1AttributeInstance.md) _Represents a mutable instance of an attribute and its associated modifiers and values._     
     * **class** [**AttributeModifier**](classendstone_1_1AttributeModifier.md) _Represents an attribute modifier._     
@@ -57,7 +56,7 @@ Here are the classes, structs, unions and interfaces with brief descriptions:
     * **class** [**CompoundTag**](classendstone_1_1CompoundTag.md)     
     * **class** [**ConsoleCommandSender**](classendstone_1_1ConsoleCommandSender.md) _Represents a console command sender._ 
     * **class** [**Criteria**](classendstone_1_1Criteria.md) _Represents a scoreboard criteria._     
-    * **class** [**CrossbowMeta**](classendstone_1_1CrossbowMeta.md) _Represents the meta for a crossbow that can have a charged projectile._     
+    * **class** [**CrossbowMeta**](classendstone_1_1CrossbowMeta.md) _Represents the meta for a crossbow that can have charged projectiles._     
     * **class** [**DamageSource**](classendstone_1_1DamageSource.md) _Represents a source of damage._     
     * **class** [**Dimension**](classendstone_1_1Dimension.md) _Represents a dimension within a_ [_**Level**_](classendstone_1_1Level.md) _._    
     * **class** [**DimensionEvent**](classendstone_1_1DimensionEvent.md) _Represents events within a level._     
@@ -101,7 +100,6 @@ Here are the classes, structs, unions and interfaces with brief descriptions:
     * **class** [**ModalForm**](classendstone_1_1ModalForm.md) _Represents a modal form with controls._     
     * **class** [**NotNull**](classendstone_1_1NotNull.md)     
     * **class** [**Nullable**](classendstone_1_1Nullable.md)     
-    * **class** [**Object**](classendstone_1_1Object.md) _Base class providing runtime type identification and safe casting._     
     * **class** [**Objective**](classendstone_1_1Objective.md) _Represents an objective on a scoreboard that can show scores specific to entries._     
     * **class** [**OfflinePlayer**](classendstone_1_1OfflinePlayer.md) _Represents a reference to a player identity and the data belonging to a player that is stored on the disk and can, thus, be retrieved without the player needing to be online._     
     * **class** [**PacketReceiveEvent**](classendstone_1_1PacketReceiveEvent.md) _Called when the server receives a packet from a connected client._     
@@ -150,7 +148,6 @@ Here are the classes, structs, unions and interfaces with brief descriptions:
     * **class** [**Preconditions**](classendstone_1_1Preconditions.md)     
     * **class** [**Recipe**](classendstone_1_1Recipe.md) _Represents some type of crafting recipe._     
     * **class** [**Registry**](classendstone_1_1Registry.md) _Abstract registry interface for objects with identifiers._     
-        * **class** [**Type**](classendstone_1_1Registry_1_1Type.md) _CRTP base for registry-backed types identified by an_ [_**Identifier**_](classendstone_1_1Identifier.md) _._    
     * **class** [**Scheduler**](classendstone_1_1Scheduler.md) _Represents a scheduler that executes various tasks._     
     * **class** [**Score**](classendstone_1_1Score.md) _Represents a score for an objective on a scoreboard._     
     * **class** [**Scoreboard**](classendstone_1_1Scoreboard.md) _Represents a scoreboard._     
@@ -183,16 +180,13 @@ Here are the classes, structs, unions and interfaces with brief descriptions:
         * **class** [**Tag**](classendstone_1_1nbt_1_1Tag.md)     
         * **struct** [**TagBase**](structendstone_1_1nbt_1_1TagBase.md) 
         * **class** [**ValueTag**](classendstone_1_1nbt_1_1ValueTag.md)     
-        * **namespace** [**detail**](namespaceendstone_1_1nbt_1_1detail.md)     
     * **struct** [**overloaded**](structendstone_1_1overloaded.md) _Helper type for visitors._ 
-    * **namespace** [**python**](namespaceendstone_1_1python.md) 
 * **class** [**Impl**](classendstone_1_1ItemStack_1_1Impl.md)     
 * **class** [**CommandBuilder**](classendstone_1_1detail_1_1CommandBuilder.md)     
 * **class** [**PermissionBuilder**](classendstone_1_1detail_1_1PermissionBuilder.md)     
 * **struct** [**PluginDescriptionBuilder**](structendstone_1_1detail_1_1PluginDescriptionBuilder.md)     
 * **struct** [**escape\_view**](structendstone_1_1nbt_1_1escape__view.md)     
 * **namespace** [**fmt**](namespacefmt.md)     
-    * **struct** [**formatter&lt; T &gt;**](structfmt_1_1formatter_3_01T_01_4.md)     
     * **struct** [**formatter&lt; endstone::Actor &gt;**](structfmt_1_1formatter_3_01endstone_1_1Actor_01_4.md)     
     * **struct** [**formatter&lt; endstone::Block &gt;**](structfmt_1_1formatter_3_01endstone_1_1Block_01_4.md)     
     * **struct** [**formatter&lt; endstone::BlockData &gt;**](structfmt_1_1formatter_3_01endstone_1_1BlockData_01_4.md)     
@@ -200,6 +194,7 @@ Here are the classes, structs, unions and interfaces with brief descriptions:
     * **struct** [**formatter&lt; endstone::BlockStates &gt;**](structfmt_1_1formatter_3_01endstone_1_1BlockStates_01_4.md)     
     * **struct** [**formatter&lt; endstone::BlockStates::mapped\_type &gt;**](structfmt_1_1formatter_3_01endstone_1_1BlockStates_1_1mapped__type_01_4.md)     
     * **struct** [**formatter&lt; endstone::BlockStates::value\_type &gt;**](structfmt_1_1formatter_3_01endstone_1_1BlockStates_1_1value__type_01_4.md)     
+    * **struct** [**formatter&lt; endstone::BlockType &gt;**](structfmt_1_1formatter_3_01endstone_1_1BlockType_01_4.md)     
     * **struct** [**formatter&lt; endstone::ByteArrayTag &gt;**](structfmt_1_1formatter_3_01endstone_1_1ByteArrayTag_01_4.md)     
     * **struct** [**formatter&lt; endstone::ByteTag &gt;**](structfmt_1_1formatter_3_01endstone_1_1ByteTag_01_4.md)     
     * **struct** [**formatter&lt; endstone::Chunk &gt;**](structfmt_1_1formatter_3_01endstone_1_1Chunk_01_4.md)     
@@ -213,6 +208,7 @@ Here are the classes, structs, unions and interfaces with brief descriptions:
     * **struct** [**formatter&lt; endstone::IntArrayTag &gt;**](structfmt_1_1formatter_3_01endstone_1_1IntArrayTag_01_4.md)     
     * **struct** [**formatter&lt; endstone::IntTag &gt;**](structfmt_1_1formatter_3_01endstone_1_1IntTag_01_4.md)     
     * **struct** [**formatter&lt; endstone::ItemStack &gt;**](structfmt_1_1formatter_3_01endstone_1_1ItemStack_01_4.md)     
+    * **struct** [**formatter&lt; endstone::ItemType &gt;**](structfmt_1_1formatter_3_01endstone_1_1ItemType_01_4.md)     
     * **struct** [**formatter&lt; endstone::ListTag &gt;**](structfmt_1_1formatter_3_01endstone_1_1ListTag_01_4.md)     
     * **struct** [**formatter&lt; endstone::Location &gt;**](structfmt_1_1formatter_3_01endstone_1_1Location_01_4.md)     
     * **struct** [**formatter&lt; endstone::LongTag &gt;**](structfmt_1_1formatter_3_01endstone_1_1LongTag_01_4.md)     
